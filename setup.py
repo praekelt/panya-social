@@ -15,6 +15,7 @@ setup(
         'http://github.com/facebook/python-sdk/tarball/master#egg=facebook-python-sdk',
     ],
     install_requires = [
+        'django-activity-stream',
         'django-socialregistration==0.4.1',
         'facebook-python-sdk',
     ],

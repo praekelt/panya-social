@@ -1,0 +1,8 @@
+{% load twitter_tags %}
+<form style="display: none;" id="{{ form_id }}" class="connect-button" name="login" method="post" action="{% url twitter_redirect %}">
+    {% csrf_token %}
+    {% if next %}
+        <input type="hidden" name="next" value="{{ next }}" />
+    {% endif %}
+</form>
+<img onclick="$('#{{ form_id }}').submit();" src="{{ MEDIA_URL }}social/images/twitter_login_button.png" />

@@ -13,10 +13,12 @@ setup(
     dependency_links = [
         'http://github.com/flashingpumpkin/django-socialregistration/tarball/master#egg=django-socialregistration-0.4.1',
         'http://github.com/facebook/python-sdk/tarball/master#egg=facebook-python-sdk',
-        'http://github.com/praekelt/django-activity-stream/tarball/master#egg=django-activity-stream-0.2.1.praekelt'
+        'http://github.com/praekelt/django-activity-stream/tarball/master#egg=django-activity-stream-0.2.1.praekelt',
+        'http://github.com/pinax/django-friends/tarball/master#egg=django-friends-0.2.dev1',
     ],
     install_requires = [
         'django-activity-stream==0.2.1.praekelt',
+        'django-friends',
         'django-socialregistration==0.4.1',
         'facebook-python-sdk',
     ],

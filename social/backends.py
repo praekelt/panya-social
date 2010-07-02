@@ -1,3 +1,10 @@
+from django.conf import settings
+from django.contrib.contenttypes.models import ContentType
+from django.core.exceptions import ImproperlyConfigured
+
+from social.constants import SOCIAL_GROUPS
+from social.models import SocialObjectPermission, resolve_is_member_method
+
 class SocialObjectPermissionBackend(object):
     """
     Authentication backend providing a social permissions system, 
@@ -8,12 +15,13 @@ class SocialObjectPermissionBackend(object):
 
     def authenticate(self, username, password):
         """
-        We don't care about authentication here, so return None
+        We don't care about authentication here, so return None.
         """
         return None
 
     def has_perm(self, user_obj, perm, obj=None):
         """
+        Check if user has access to object based on social permissions.
         """
         # make sure we have a user, even if its anonymous
         if not user_obj.is_authenticated():
@@ -35,15 +43,20 @@ class SocialObjectPermissionBackend(object):
         # get our object's owner
         owner=obj.get_owner()
 
-        # get configured social permission objects by content type, permission and owner
+        # get configured social permission objects by content type, permission and owner.
         # iterate over result and check if user is part of the social group. 
-        # if so permission is granted
-        perms = SocialObjectPermission.objects.filter(content_type=content_type, object_id=obj.id, permission=perm, user=owner)
-        for perm in perms:
-            #XXX:checkperm
-            if perm.is_member(owner, user):
-                return True
+        # if so permission is granted.
+        perms = SocialObjectPermission.objects.filter(content_type=content_type, user=owner).filter(**{'can_%s' % perm: True})
 
-        # fallback to default social group if we could not determine permission
-        default_social_group = settings.DEFAULT_SOCIAL_PERMISSION_GROUP
-        return default_social_group.is_member(owner, user)
+        # permissions take priority by social group id, with lowest ids being of highest priority
+        perms = perms.order_by('social_group')
+        for perm in perms:
+            return perm.is_member(target_user=owner, requesting_user=user_obj)
+
+        # fallback to default social group if we could not determine permission.
+        # if no default is defined, raise an ImproperlyConfigured exception.
+        try:
+            default_social_group = settings.DEFAULT_SOCIAL_PERMISSION_GROUP
+            return resolve_is_member_method(SOCIAL_GROUPS[default_social_group][1])(target_user=owner, requesting_user=user_obj)
+        except:
+            raise ImproperlyConfigured('settings should provide a DEFAULT_SOCIAL_PERMISSION_GROUP.')

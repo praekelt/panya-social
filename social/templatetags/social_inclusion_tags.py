@@ -5,30 +5,30 @@ from socialregistration.utils import _https
 
 register = template.Library()
 
-@register.inclusion_tag('social/inclusion_tags/facebook_login_button.html', takes_context=True)
-def facebook_login_button(context):
+@register.inclusion_tag('social/inclusion_tags/twitter_connect_form.html', takes_context=True)
+def twitter_connect_form(context, form_id):
     context.update({
-        'form_id': "facebook_login_form_%s" % random.randint(1,1000)
+        'form_id': form_id,
     })
     return context
 
-@register.inclusion_tag('social/inclusion_tags/facebook_register_button.html', takes_context=True)
-def facebook_register_button(context):
+@register.inclusion_tag('social/inclusion_tags/facebook_connect_form.html', takes_context=True)
+def facebook_connect_form(context, form_id):
     context.update({
-        'form_id': "facebook_register_form_%s" % random.randint(1,1000),
+        'form_id': form_id,
     })
     return context
 
-@register.inclusion_tag('social/inclusion_tags/twitter_login_button.html', takes_context=True)
-def twitter_login_button(context):
-    context.update({
-        'form_id': "twitter_login_form_%s" % random.randint(1,1000),
-    })
-    return context
+@register.inclusion_tag('social/inclusion_tags/twitter_connect_button.html')
+def twitter_connect_button(form_id, media_path):
+    return {
+        'form_id': form_id,
+        'media_path': media_path,
+    }
 
-@register.inclusion_tag('social/inclusion_tags/twitter_register_button.html', takes_context=True)
-def twitter_register_button(context):
-    context.update({
-        'form_id': "twitter_register_form_%s" % random.randint(1,1000),
-    })
-    return context
+@register.inclusion_tag('social/inclusion_tags/facebook_connect_button.html')
+def facebook_connect_button(form_id, media_path):
+    return {
+        'form_id': form_id,
+        'media_path': media_path,
+    }

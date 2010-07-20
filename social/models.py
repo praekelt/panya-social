@@ -62,3 +62,20 @@ class SocialObjectPermission(models.Model):
         Determine if the requesting user is part of the social group this permission applies to.
         """
         return resolve_is_member_method(SOCIAL_GROUPS[self.social_group][1])(target_user, requesting_user)
+
+class SocialObjectFieldPermission(models.Model):
+    user = models.ForeignKey(User)
+    can_view = models.BooleanField(default=False)
+    can_change = models.BooleanField(default=False)
+    can_delete = models.BooleanField(default=False)
+    social_group = models.IntegerField(
+        choices = SOCIAL_GROUPS,
+    )
+    content_type = models.ForeignKey(ContentType)
+    field_name = models.CharField(max_length=128)
+
+    def is_member(self, target_user, requesting_user):
+        """
+        Determine if the requesting user is part of the social group this permission applies to.
+        """
+        return resolve_is_member_method(SOCIAL_GROUPS[self.social_group][1])(target_user, requesting_user)

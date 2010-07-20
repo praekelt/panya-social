@@ -1,8 +1,0 @@
-{% load socialregistration_tags %}
-<form style="display: none;" id="{{ form_id }}" class="connect-button" name="login" method="post" action="{% if request.user.is_authenticated %}{% url facebook_connect %}{% else %}{% url facebook_login %}{% endif %}">
-    {% csrf_token %}
-    {% if next %}
-        <input type="hidden" name="next" value="{{ next }}" />
-    {% endif %}
-</form>
-<img onclick="facebookConnect($('#{{ form_id }}'));" src="{{ MEDIA_URL }}social/images/facebook_login_button.png" />

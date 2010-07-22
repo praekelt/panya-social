@@ -50,10 +50,12 @@ def friendship_setup_button(context, user):
         if are_friends:
             include_template = 'social/inclusion_tags/friendship_remove_button.html'
         else:
-            # If users are not friends but an invitation exists, render awaiting confirmation template.
+            # If users are not friends but an invitation exists, render awaiting confirmation or declined template.
             status = FriendshipInvitation.objects.invitation_status(user1=requesting_user, user2=user)
             if status == 2:
                 include_template = 'social/inclusion_tags/friendship_awaiting_confirmation_button.html'
+            if status == 6:
+                include_template = 'social/inclusion_tags/friendship_declined_button.html'
 
     return {
         'include_template': include_template,

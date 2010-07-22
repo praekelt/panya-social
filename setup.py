@@ -15,10 +15,12 @@ setup(
         'http://github.com/facebook/python-sdk/tarball/master#egg=facebook-python-sdk',
         'http://github.com/praekelt/django-activity-stream/tarball/master#egg=django-activity-stream-0.2.1.praekelt',
         'http://github.com/pinax/django-friends/tarball/master#egg=django-friends-0.2.dev1',
+        'http://github.com/pinax/django-notification/tarball/master#egg=django-notification-0.2.0.dev2',
     ],
     install_requires = [
         'django-activity-stream==0.2.1.praekelt',
-        'django-friends',
+        'django-friends==0.2.dev1',
+        'django-notification==0.2.0.dev2',
         'django-socialregistration==0.4.1',
         'facebook-python-sdk',
     ],

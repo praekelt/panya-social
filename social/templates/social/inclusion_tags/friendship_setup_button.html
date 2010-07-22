@@ -1,0 +1,15 @@
+{% include include_template %}
+
+<script type="text/javascript">
+    function setup_friendship(click_selector, action_url, replace_selector) {
+        $(click_selector).click(function() {
+            $.ajax({
+                url: action_url,
+                success: function(html){
+                    $(replace_selector).replaceWith(html);
+                }
+            });
+            return false;
+        });
+    }
+</script> 

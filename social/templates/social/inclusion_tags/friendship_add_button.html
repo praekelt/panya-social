@@ -1,0 +1,7 @@
+<a id="add_friend_{{ object.id }}" href="#" class="add_friend png_bg"></a>
+
+<script type="text/javascript">
+    $(function() {
+        setup_friendship("#add_friend_{{ object.id }}", "{% url social_add_friend object.id %}", "#add_friend_{{ object.id }}");
+    });
+</script>

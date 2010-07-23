@@ -1,5 +1,7 @@
 from django import template
 from django.template import TemplateSyntaxError
+        
+from social import utils
 
 register = template.Library()
 
@@ -37,7 +39,7 @@ class FilterPermittedFieldsNode(template.Node):
         owner = self.owner.resolve(context)
         requesting_user = self.requesting_user.resolve(context)
 
-        filtered_object = obj
+        filtered_object = utils.filter_permitted_fields(obj, owner, requesting_user)
         if self.as_var:
             context[self.as_var] = filtered_object
             return ''

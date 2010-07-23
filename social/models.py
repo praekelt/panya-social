@@ -31,6 +31,9 @@ def is_member_friends(target_user, requesting_user):
     """
     Return true if requesting user is a friend of target user
     """
+    if requesting_user.is_anonymous():
+        return False
+
     return Friendship.objects.are_friends(target_user, requesting_user)
 
 def is_member_friends_of_friends(target_user, requesting_user):
@@ -38,6 +41,9 @@ def is_member_friends_of_friends(target_user, requesting_user):
     Return true if requesting user is a friend of target user
     or is a friend of any of target user's friends.
     """
+    if requesting_user.is_anonymous():
+        return False
+    
     if Friendship.objects.are_friends(target_user, requesting_user):
         return True
     else:

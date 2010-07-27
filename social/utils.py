@@ -1,3 +1,14 @@
+import threading
+
+from django import template
+from django.conf import settings
+from django.contrib.comments.models import Comment
+from django.contrib.sites.models import Site
+from django.db.models.signals import post_save
+from django.template import Template
+
+import facebook
+
 def filter_permitted_fields(obj, owner, requesting_user):
     fields = obj._meta.fields
     # Attach our user to the object so we can check permission in has_field_perm.
@@ -27,24 +38,43 @@ def filter_permitted_objects(object_list, owner, requesting_user, count=None):
     return filtered_list
 
 
-def put_wall_post_comment(sender, instance, created, **kwargs):
-    import pdb; pdb.set_trace()
-
-    posting_user = instance.user
-
-
-    
-    attch = { 
-        "name": "Link name", 
-        "link": "http://www.example.com/",
-        "caption": "{*actor*} posted a new review",
-        "description": "This is a longer description of the attachment",
-        "picture": "http://www.example.com/thumbnail.jpg"
+def get_wall_post_attachment(obj, **kwargs):
+    current_site = Site.objects.get(id=settings.SITE_ID)
+    context = {
+        'object': obj,
+        'site_name': current_site.name,
+        'site_domain': current_site.domain,
     }
+    context.update(kwargs)
+    context = template.Context(context)
+    t = Template("{% load panya_inclusion_tags %}{% render_object object 'facebook_wall_post' %}")
+    result = t.render(context)
+    if result:
+        return eval(result)
 
-    context['request'].facebook.graph.put_wall_post('message', attachment=attch)
-
-from django.db.models.signals import post_save
-from django.contrib.comments.models import Comment
+def get_user_graph(user):
+    # get graph using fabebook profile token
+    oauth_access_token = user.facebookprofile_set.all()[0].oauth_access_token
+    return facebook.GraphAPI(oauth_access_token)
+   
+def put_wall_post_threaded(graph, message, attachment):
+    thread_kwargs = {}
+    if message:
+        thread_kwargs.update({'message': message})
+    if attachment:
+        thread_kwargs.update({'attachment': attachment})
+    try:
+        # post to users wall using threading
+        t = threading.Thread(target=graph.put_wall_post, kwargs=thread_kwargs)
+        t.setDaemon(True)
+        t.start()
+    # Yes it's bad to except blindly, but we don't want Facebook to hold up anything.
+    except:
+        pass
+    
+def put_wall_post_comment(sender, instance, created, **kwargs):
+    graph = get_user_graph(instance.user)
+    attachment = get_wall_post_attachment(obj=instance.content_object, comment=instance.comment)
+    put_wall_post_threaded(graph=graph, message='commented on KFC', attachment=attachment)
 
 post_save.connect(put_wall_post_comment, sender=Comment)

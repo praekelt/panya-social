@@ -1,8 +1,11 @@
 import random
 
 from django import template
+from django.conf import settings
+from django.contrib.sites.models import Site
 
 from friends.models import Friendship, FriendshipInvitation
+from socialregistration.models import FacebookProfile
 
 register = template.Library()
 
@@ -60,4 +63,22 @@ def friendship_setup_button(context, user):
     return {
         'include_template': include_template,
         'object': user,
+    }
+
+@register.inclusion_tag('social/inclusion_tags/facebook_invite_friends.html', takes_context=True)
+def facebook_invite_friends(context, user):
+    """
+    Renders Facebook friends invite form.
+    """
+    current_site = Site.objects.get(id=settings.SITE_ID)
+
+    # exclude id's of facebook users that are already using the app
+    fb_profiles = FacebookProfile.objects.all()
+    exclude_ids = ",".join([fb_profile.uid for fb_profile in fb_profiles])
+
+    return {
+        'exclude_ids': exclude_ids,
+        'site_name': current_site.name,
+        'site_domain': current_site.domain,
+        'next': context['next'],
     }

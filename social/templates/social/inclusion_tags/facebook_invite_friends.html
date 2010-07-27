@@ -1,0 +1,20 @@
+<fb:serverFbml>
+    <script type="text/fbml">
+        <fb:fbml>
+            <fb:request-form 
+                action="http://{{ site_domain }}{{ next }}"
+                method="POST" 
+                invite="true" 
+                type="{{ site_name }}"
+                content="You have been invited to {{ site_name }}{% filter force_escape %}<fb:req-choice url="http://{{ site_domain }}" label="Confirm" />{% endfilter %}"
+                <fb:multi-friend-selector 
+                    max="20"
+                    actiontext="Invite your friends to {{ site_name }}"
+                    showborder="true" 
+                    rows="5" 
+                    cols="3"
+                    exclude_ids="{{ exclude_ids }}">
+            </fb:request-form>
+        </fb:fbml>
+    </script>
+</fb:serverFbml>

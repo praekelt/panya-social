@@ -73,8 +73,10 @@ def put_wall_post_threaded(graph, message, attachment):
         pass
     
 def put_wall_post_comment(sender, instance, created, **kwargs):
-    graph = get_user_graph(instance.user)
-    attachment = get_wall_post_attachment(obj=instance.content_object, comment=instance.comment)
-    put_wall_post_threaded(graph=graph, message='commented on KFC', attachment=attachment)
+    if instance.user:
+        if instance.user.is_authenticated():
+            graph = get_user_graph(instance.user)
+            attachment = get_wall_post_attachment(obj=instance.content_object, comment=instance.comment)
+            put_wall_post_threaded(graph=graph, message='commented on KFC', attachment=attachment)
 
 post_save.connect(put_wall_post_comment, sender=Comment)

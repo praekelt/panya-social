@@ -54,8 +54,10 @@ def get_wall_post_attachment(obj, **kwargs):
 
 def get_user_graph(user):
     # get graph using fabebook profile token
-    oauth_access_token = user.facebookprofile_set.all()[0].oauth_access_token
-    return facebook.GraphAPI(oauth_access_token)
+    facebook_profiles = user.facebookprofile_set.all()
+    if facebook_profiles:
+        oauth_access_token = facebook_profiles[0].oauth_access_token
+        return facebook.GraphAPI(oauth_access_token)
    
 def put_wall_post_threaded(graph, message, attachment):
     thread_kwargs = {}
@@ -76,7 +78,8 @@ def put_wall_post_comment(sender, instance, created, **kwargs):
     if instance.user:
         if instance.user.is_authenticated():
             graph = get_user_graph(instance.user)
-            attachment = get_wall_post_attachment(obj=instance.content_object, comment=instance.comment)
-            put_wall_post_threaded(graph=graph, message='commented on KFC', attachment=attachment)
+            if graph:
+                attachment = get_wall_post_attachment(obj=instance.content_object, comment=instance.comment)
+                put_wall_post_threaded(graph=graph, message='commented on KFC', attachment=attachment)
 
 post_save.connect(put_wall_post_comment, sender=Comment)

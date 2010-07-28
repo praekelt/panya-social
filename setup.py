@@ -12,7 +12,7 @@ setup(
     packages = find_packages(),
     dependency_links = [
         #'http://github.com/flashingpumpkin/django-socialregistration/tarball/master#egg=django-socialregistration-0.4.1',
-        'http://github.com/praekelt/django-socialregistration/tarball/master#egg=django-socialregistration-0.4.1',
+        'http://github.com/praekelt/django-socialregistration/tarball/0.4.1.tokenstore#egg=django-socialregistration-0.4.1.tokenstore',
         'http://github.com/facebook/python-sdk/tarball/master#egg=facebook-python-sdk',
         'http://github.com/praekelt/django-activity-stream/tarball/master#egg=django-activity-stream-0.2.1.praekelt',
         'http://github.com/pinax/django-friends/tarball/master#egg=django-friends-0.2.dev1',
@@ -22,7 +22,7 @@ setup(
         'django-activity-stream==0.2.1.praekelt',
         'django-friends==0.2.dev1',
         'django-notification==0.2.0.dev2',
-        'django-socialregistration==0.4.1',
+        'django-socialregistration==0.4.1.tokenstore',
         'facebook-python-sdk',
     ],
     include_package_data=True,

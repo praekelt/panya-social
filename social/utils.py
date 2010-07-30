@@ -2,10 +2,13 @@ import threading
 
 from django import template
 from django.conf import settings
+from django.contrib.auth.models import User
 from django.contrib.comments.models import Comment
 from django.contrib.sites.models import Site
 from django.db.models.signals import post_save
 from django.template import Template
+
+from secretballot.models import Vote
 
 import facebook
 
@@ -83,3 +86,16 @@ def put_wall_post_comment(sender, instance, created, **kwargs):
                 put_wall_post_threaded(graph=graph, message='commented on KFC', attachment=attachment)
 
 post_save.connect(put_wall_post_comment, sender=Comment)
+
+def put_wall_post_vote(sender, instance, created, **kwargs):
+    try:
+        user = User.objects.get(username=instance.token)
+    except User.DoesNotExist:
+        return
+    if user.is_authenticated():
+        graph = get_user_graph(user)
+        if graph:
+            attachment = get_wall_post_attachment(obj=instance.content_object)
+            put_wall_post_threaded(graph=graph, message='voted on KFC', attachment=attachment)
+
+post_save.connect(put_wall_post_vote, sender=Vote)

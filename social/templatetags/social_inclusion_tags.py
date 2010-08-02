@@ -38,31 +38,34 @@ def facebook_connect_button(form_id, media_path):
     }
 
 @register.inclusion_tag('social/inclusion_tags/friendship_setup_button.html', takes_context=True)
-def friendship_setup_button(context, user):
+def friendship_setup_button(context, user, include_template_name='social/inclusion_tags/friendship_setup_button_include.html'):
     """
-    Renders either an 'add friend', 'remove friend' or 'awaiting confirmation' button based on current friendship state.
+    Renders either an 'add friend', 'remove friend', 'awaiting confirmation' or 'friendship declined' button based on current friendship state.
     Also includes javascript to request friend or remove friend.
     """
+
     # Render add friend template by default.
-    include_template = 'social/inclusion_tags/friendship_add_button.html'
+    active_class = "add_friend"
     requesting_user = context['request'].user
 
     if requesting_user.is_authenticated():
         # If users are friends already render remove friend template.
         are_friends = Friendship.objects.are_friends(requesting_user, user)
         if are_friends:
-            include_template = 'social/inclusion_tags/friendship_remove_button.html'
+            active_class = "remove_friend"
         else:
             # If users are not friends but an invitation exists, render awaiting confirmation or declined template.
             status = FriendshipInvitation.objects.invitation_status(user1=requesting_user, user2=user)
             if status == 2:
-                include_template = 'social/inclusion_tags/friendship_awaiting_confirmation_button.html'
+                active_class = "awaiting_friend_confirmation"
             if status == 6:
-                include_template = 'social/inclusion_tags/friendship_declined_button.html'
+                active_class = "request_declined"
 
     return {
-        'include_template': include_template,
+        'include_template_name': include_template_name,
         'object': user,
+        'active_class': active_class,
+        'random': random.randint(0, 100000000)
     }
 
 @register.inclusion_tag('social/inclusion_tags/facebook_invite_friends.html', takes_context=True)

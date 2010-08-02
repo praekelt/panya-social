@@ -1,12 +1,19 @@
-{% include include_template %}
+{% include include_template_name %}
 
 <script type="text/javascript">
-    function setup_friendship(click_selector, action_url, replace_selector) {
+    function setup_friendship(click_selector, action_url, hide_selector, show_selector) {
         $(click_selector).click(function() {
             $.ajax({
                 url: action_url,
                 success: function(html){
-                    $(replace_selector).replaceWith(html);
+                    $(hide_selector).each(function(i){
+                        $(this).css('visibility', 'hidden');
+                        $(this).css('display', 'none');
+                    });
+                    $(show_selector).each(function(i){
+                        $(this).css('visibility', 'visible');
+                        $(this).css('display', 'block');
+                    });
                 }
             });
             return false;

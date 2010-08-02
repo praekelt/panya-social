@@ -21,7 +21,7 @@ def add_friend(request, user_id):
 
     FriendshipInvitation.objects.create_friendship_request(from_user=requesting_user, to_user=user)
    
-    return render_to_response('social/inclusion_tags/friendship_awaiting_confirmation_button.html', {'object': user})
+    return render_to_response('social/inclusion_tags/friendship_setup_button.html', {'object': user})
 
 @login_required
 def remove_friend(request, user_id):
@@ -37,7 +37,7 @@ def remove_friend(request, user_id):
 
     Friendship.objects.remove(user1=requesting_user, user2=user)
    
-    return render_to_response('social/inclusion_tags/friendship_add_button.html', {'object': user})
+    return render_to_response('social/inclusion_tags/friendship_setup_button.html', {'object': user})
     
     
 @login_required

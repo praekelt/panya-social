@@ -43,6 +43,8 @@ def friendship_setup_button(context, user, include_template_name='social/inclusi
     Renders either an 'add friend', 'remove friend', 'awaiting confirmation' or 'friendship declined' button based on current friendship state.
     Also includes javascript to request friend or remove friend.
     """
+    if not user:
+        return {} 
 
     # Render add friend template by default.
     active_class = "add_friend"

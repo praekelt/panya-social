@@ -1,0 +1,16 @@
+<a id="add_friend_{{ object.id }}" href="#" class="add_friend png_bg" {% if active_class != 'add_friend'%}style="display: none; visibility: hidden; "{% endif %}></a>
+
+<a id="awaiting_friend_confirmation_{{ object.id }}" href="#" class="awaiting_confirmation png_bg" {% if active_class != 'awaiting_friend_confirmation'%}style="display: none; visibility: hidden; "{% endif %}></a>
+
+<a id="remove_friend_{{ object.id }}" href="#" class="remove_friend png_bg" {% if active_class != 'remove_friend'%}style="display: none; visibility: hidden; "{% endif %}></a>
+
+<a id="request_declined_{{ object.id }}" href="#" class="request_declined png_bg" {% if active_class != 'request_declined'%}style="display: none; visibility: hidden; "{% endif %}></a>
+
+<script type="text/javascript">
+    $(function() {
+        // Add friend ajax hook.
+        setup_friendship("#add_friend_{{ object.id }}", "{% url social_add_friend object.id %}", "#add_friend_{{ object.id }}", "#awaiting_friend_confirmation_{{ object.id }}");
+        // Remove friend ajax hook.
+        setup_friendship("#remove_friend_{{ object.id }}", "{% url social_remove_friend object.id %}", "#remove_friend_{{ object.id }}", "#add_friend_{{ object.id }}");
+    });
+</script>

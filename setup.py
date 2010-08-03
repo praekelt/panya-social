@@ -11,7 +11,6 @@ setup(
     url='http://github.com/praekelt/panya-social',
     packages = find_packages(),
     dependency_links = [
-        #'http://github.com/flashingpumpkin/django-socialregistration/tarball/master#egg=django-socialregistration-0.4.1',
         'http://github.com/praekelt/django-socialregistration/tarball/0.4.1.tokenstore.1#egg=django-socialregistration-0.4.1.tokenstore.1',
         'http://github.com/facebook/python-sdk/tarball/master#egg=facebook-python-sdk',
         'http://github.com/praekelt/django-activity-stream/tarball/master#egg=django-activity-stream-0.2.1.praekelt',
@@ -24,6 +23,7 @@ setup(
         'django-notification==0.2.0.dev2',
         'django-socialregistration==0.4.1.tokenstore.1',
         'facebook-python-sdk',
+        'panya',
     ],
     include_package_data=True,
     classifiers = [
@@ -31,7 +31,7 @@ setup(
         "License :: OSI Approved :: BSD License",
         "Development Status :: 4 - Beta",
         "Operating System :: OS Independent",
-        "Framework :: Panya",
+        "Framework :: Django",
         "Intended Audience :: Developers",
         "Topic :: Internet :: WWW/HTTP :: Dynamic Content",
     ],

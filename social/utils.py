@@ -1,10 +1,15 @@
+import cStringIO 
+import mimetypes
+import random
 import threading
+import urllib
 
 from django import template
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.contrib.comments.models import Comment
 from django.contrib.sites.models import Site
+from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.db.models.signals import post_save
 from django.template import Template
 
@@ -61,6 +66,30 @@ def get_user_graph(user):
     if facebook_profiles:
         oauth_access_token = facebook_profiles[0].oauth_access_token
         return facebook.GraphAPI(oauth_access_token)
+
+def get_facebook_uid(user):
+    facebook_profiles = user.facebookprofile_set.all()
+    if facebook_profiles:
+        return facebook_profiles[0].uid
+
+def get_facebook_profile_picture(user, field_name):
+    uid = get_facebook_uid(user)
+    source_url = 'http://graph.facebook.com/%s/picture?type=large' % uid
+    image_data = urllib.urlopen(source_url).read()
+
+    f = cStringIO.StringIO()
+    f.write(image_data)
+    file_name = '%s%s.jpg' % (uid, field_name)
+    content_type=mimetypes.guess_type(file_name)[0]
+    elements = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ123456890'
+    file_name = '%s.%s' % (''.join([random.choice(elements) for n in range(8)]), file_name.split('.')[-1])
+    return InMemoryUploadedFile(f, field_name, file_name, content_type, f.__sizeof__(), None)
+
+
+def get_user_facebook_profile(user):
+    graph = get_user_graph(user)
+    uid = get_facebook_uid(user)
+    return facebook.GraphAPI(user.facebookprofile_set.all()[0].oauth_access_token).get_object(uid)
    
 def put_wall_post_threaded(graph, message, attachment):
     thread_kwargs = {}

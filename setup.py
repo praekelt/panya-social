@@ -2,9 +2,9 @@ from setuptools import setup, find_packages
 
 setup(
     name='panya-social',
-    version='0.0.2',
+    version='0.0.3',
     description='Panya social app.',
-    long_description = open('README.rst', 'r').read(),
+    long_description = open('README.rst', 'r').read() + open('AUTHORS.rst', 'r').read() + open('CHANGELOG.rst', 'r').read()
     author='Praekelt Foundation',
     author_email='dev@praekelt.com',
     license='BSD',

@@ -1,3 +1,5 @@
+import urllib2
+
 from django import template
 from django.conf import settings
 from django.contrib.sites.models import Site
@@ -121,7 +123,8 @@ class TwitterShareURLNode(template.Node):
         current_site = Site.objects.get(id=settings.SITE_ID)
         
         url = 'http://%s%s' % (current_site.domain, path)
-        tweet = "%s...: %s" % (message[:140 - len(url) - 5], url)
+        tiny_url = urllib2.urlopen('http://tinyurl.com/api-create.php?url=%s' % url).read()
+        tweet = "%s...: %s" % (message[:140 - len(tiny_url) - 5], tiny_url)
 
         twitter_share_url = "http://twitter.com/home?%s" % urlencode({
             'status': tweet,
